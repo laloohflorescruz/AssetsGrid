@@ -25,6 +25,7 @@ namespace AssetsGrid.Models
         {
         }
         public DbSet<Assets> Assets { get; set; }
+        public DbSet<FacilitySites> FacilitySites  { get; set; }
 
         public static ApplicationDbContext Create()
         {

@@ -200,6 +200,8 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Assets.cs" />
+    <Compile Include="Models\AssetViewModel.cs" />
+    <Compile Include="Models\FacilitySites.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -499,6 +501,11 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Asset\Index.cshtml" />
+    <Content Include="Views\Asset\_AssetsPartial.cshtml" />
+    <Content Include="Views\Asset\_CreatePartial.cshtml" />
+    <Content Include="Views\Asset\_EditPartial.cshtml" />
+    <Content Include="Views\Asset\_detailsPartial.cshtml" />
+    <Content Include="Views\Asset\_DeletePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

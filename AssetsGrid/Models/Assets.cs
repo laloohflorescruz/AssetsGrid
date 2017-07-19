@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -64,5 +65,12 @@ namespace AssetsGrid.Models
         public string Comments { get; set; }
 
         public bool Issued { get; set; }
+
+        [ForeignKey("FacilitySiteID")]
+        public Guid FacilitySiteID { get; set; }
+
+        public virtual FacilitySites FacilitySites { get; set; }
+
+
     }
 }
