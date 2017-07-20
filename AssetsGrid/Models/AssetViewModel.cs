@@ -9,7 +9,8 @@ namespace AssetsGrid.Models
 {
     public class AssetViewModel
     {
-        public Guid AssetID { get; set; }
+        public int AssetID { get; set; }
+
         [Display(Name = "Barcode")]
         public string Barcode { get; set; }
 
@@ -17,7 +18,7 @@ namespace AssetsGrid.Models
         public string SerialNumber { get; set; }
         [Required(ErrorMessage = "Facility-Site is Required")]
         [Display(Name = "Facility-Site")]
-        public Guid FacilitySiteID { get; set; }
+        public int FacilitySiteID { get; set; }
         [Display(Name = "Facility-Site")]
         public string FacilitySite { get; set; }
         [Display(Name = "PM-Guide-ID")]

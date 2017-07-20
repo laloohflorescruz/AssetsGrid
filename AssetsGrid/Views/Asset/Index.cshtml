@@ -1,44 +1,21 @@
-﻿
-<div class="row">
+﻿<div class="row">
     <div class="col-md-12">
         <div class="panel panel-primary list-panel" id="list-panel">
             <div class="panel-heading list-panel-heading">
                 <h1 class="panel-title list-panel-title">Assets</h1>
-
+                <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#advancedSearchModal" id="advancedsearch-button">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Advanced Search
+                </button>
+                <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-url="@Url.Action("Create","Asset")" id="btnCreateAsset">
+                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Add Asset
+                </button>
             </div>
             <div class="panel-body">
-                <table id="assets-data-table"
-                       class="table table-striped table-bordered"
-                       style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Bar Code</th>
-                            <th>Manufacturer</th>
-                            <th>Model Number</th>
-                            <th>Building</th>
-                            <th>Room No</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var asset in Model)
-                        {
-                            <tr>
-                                <td>@asset.Barcode</td>
-                                <td>@asset.Manufacturer</td>
-                                <td>@asset.ModelNumber</td>
-                                <td>@asset.Building</td>
-                                <td>@asset.RoomNo</td>
-                                <td>@asset.Quantity</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <table id="assets-data-table" class="table table-striped table-bordered" style="width:100%;"></table>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="createAssetModal" tabindex="-1" role="dialog" aria-labelledby="CreateAssetModal" aria-hidden="true" data-backdrop="static">
     <div id="createAssetContainer">
@@ -60,42 +37,62 @@
     </div>
 </div>
 
+@Html.Action("AdvancedSearch")
+
 @section Scripts
 {
+
     <script type="text/javascript">
-        $(document).ready(function () {
+        var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
 
-            $('#assets-data-table').DataTable();
+                init: function () {
+                    dt = $('#assets-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "ajax": {
+                            "url": "@Url.Action("Get","Asset")",
+                            "data": function (data) {
 
-            "columns":[
-                { "title": "Bar Code", "data": "BarCode", "searchable": true },
-                { "title": "Manufacturer", "data": "Manufacturer", "searchable": true },
-                { "title": "Model", "data": "ModelNumber", "searchable": true },
-                { "title": "Building", "data": "Building", "searchable": true },
-                { "title": "Room No", "data": "RoomNo" },
-                { "title": "Quantity", "data": "Quantity" },
-                {
-                    "title": "Actions",
-                    "data": "AssetID",
-                    "searchable": false,
-                    "sortable": false,
-                    "render": function (data, type, full, meta) {
-                        return '<a href="@Url.Action("Edit","Asset")?id=' + data + '" class="editAsset">Edit</a> | <a href="@Url.Action("Details","Asset")?id=' + data + '">Details</a> | <a href="@Url.Action("Delete","Asset")?id=' + data + '">Delete</a>';
-                    }
-              }
-            ],
-                "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                                data.FacilitySite = $("#FacilitySite").val();
+                                data.Building = $("#Building").val();
+                                data.Manufacturer = $("#Manufacturer").val();
+                                data.Status = $("#Status").val();
+                            }
+                        },
+                        "columns": [
+                            { "title": "Bar Code", "data": "BarCode", "searchable": true },
+                            { "title": "Manufacturer", "data": "Manufacturer", "searchable": true },
+                            { "title": "Model", "data": "ModelNumber", "searchable": true },
+                            { "title": "Building", "data": "Building", "searchable": true },
+                            { "title": "Room No", "data": "RoomNo" },
+                            { "title": "Quantity", "data": "Quantity" },
+                            {
+                                "title": "Actions",
+                                "data": "AssetID",
+                                "searchable": false,
+                                "sortable": false,
+                                "render": function (data, type, full, meta) {
+                                    return '<a href="@Url.Action("Edit","Asset")?id=' + data + '" class="editAsset">Edit</a> | <a href="@Url.Action("Details","Asset")?id=' + data + '" class="detailsAsset">Details</a> | <a href="@Url.Action("Delete","Asset")?id=' + data + '" class="deleteAsset">Delete</a>';
+                                }
+                            }
+                        ],
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
                     });
-                } 
+                },
 
-       
-                 
-        // Advanced Search Modal Search button click handler
-        $('#btnPerformAdvancedSearch').on("click", assetListVM.refresh);
+                refresh: function () {
+                    dt.ajax.reload();
+                }
+            }
 
-        // initialize the datatables
-        assetListVM.init();
+            // Advanced Search Modal Search button click handler
+            $('#btnPerformAdvancedSearch').on("click", assetListVM.refresh);
 
+            // initialize the datatables
+            assetListVM.init();
 
             $("#btnCreateAsset").on("click", function () {
 
@@ -108,6 +105,7 @@
                 });
 
             });
+
             function CreateAssetSuccess(data) {
 
                 if (data != "success") {
@@ -120,9 +118,20 @@
 
             }
 
+            $('#assets-data-table').on("click", ".editAsset", function (event) {
 
+                event.preventDefault();
 
-          
+                var url = $(this).attr("href");
+
+                $.get(url, function (data) {
+                    $('#editAssetContainer').html(data);
+
+                    $('#editAssetModal').modal('show');
+                });
+
+            });
+
             /**** Edit Asset Ajax Form CallBack ********/
 
             function UpdateAssetSuccess(data) {
@@ -149,47 +158,40 @@
                     $('#detailsAssetModal').modal('show');
                 });
 
-                $('#assets-data-table').on("click", ".deleteAsset", function (event) {
+            });
 
-                    event.preventDefault();
 
-                    var url = $(this).attr("href");
+            /**** Delet Asset Ajax Form CallBack ********/
 
-                    $.get(url, function (data) {
-                        $('#deleteAssetContainer').html(data);
+            function DeleteAssetSuccess(data) {
 
-                        $('#deleteAssetModal').modal('show');
-                    });
-
-                });
-
-                function DeleteAssetSuccess(data) {
-
-                    if (data != "success") {
-                        $('#deleteAssetContainer').html(data);
-                        return;
-                    }
-                    $('#deleteAssetModal').modal('hide');
-                    $('#deleteAssetContainer').html("");
-                    assetListVM.refresh();
-
+                if (data != "success") {
+                    $('#deleteAssetContainer').html(data);
+                    return;
                 }
+                $('#deleteAssetModal').modal('hide');
+                $('#deleteAssetContainer').html("");
+                assetListVM.refresh();
 
-                $('#assets-data-table').on("click", ".editAsset", function (event) {
+            }
 
-                    event.preventDefault();
+            $('#assets-data-table').on("click", ".deleteAsset", function (event) {
 
-                    var url = $(this).attr("href");
+                event.preventDefault();
 
-                    $.get(url, function (data) {
-                        $('#editAssetContainer').html(data);
+                var url = $(this).attr("href");
 
-                        $('#editAssetModal').modal('show');
-                    });
+                $.get(url, function (data) {
+                    $('#deleteAssetContainer').html(data);
 
+                    $('#deleteAssetModal').modal('show');
                 });
 
             });
-            
+
+        });
+
+
     </script>
+
 }

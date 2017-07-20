@@ -10,16 +10,13 @@ namespace AssetsGrid.Models
     public class Assets
     {
         [Key]
-        public System.Guid AssetID { get; set; }
+        public int AssetID { get; set; }
 
         [Display(Name = "Barcode")]
         public string Barcode { get; set; }
 
         [Display(Name = "Serial-Number")]
         public string SerialNumber { get; set; }
-
-        [Display(Name = "Facility-Site")]
-        public string FacilitySite { get; set; }
 
         [Display(Name = "PM-Guide-ID")]
         public string PMGuide { get; set; }
@@ -66,8 +63,8 @@ namespace AssetsGrid.Models
 
         public bool Issued { get; set; }
 
-        [ForeignKey("FacilitySiteID")]
-        public Guid FacilitySiteID { get; set; }
+        
+        public int FacilitySiteID { get; set; }
 
         public virtual FacilitySites FacilitySites { get; set; }
 

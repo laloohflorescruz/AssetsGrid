@@ -1,4 +1,5 @@
 ﻿using AssetsGrid.Models;
+using DataTables.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
@@ -80,7 +81,7 @@ namespace AssetsGrid.Controllers
             return Content("success");
         }
 
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(int id)
         {
             var asset = DbContext.Assets.FirstOrDefault(x => x.AssetID == id);
 
@@ -126,7 +127,7 @@ namespace AssetsGrid.Controllers
 
         }
 
-        public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(int id)
         {
             var asset = await DbContext.Assets.FirstOrDefaultAsync(x => x.AssetID == id);
             var assetVM = MapToViewModel(asset);
@@ -137,7 +138,7 @@ namespace AssetsGrid.Controllers
             return View(assetVM);
         }
 
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete(int id)
         {
             var asset = DbContext.Assets.FirstOrDefault(x => x.AssetID == id);
 
@@ -149,7 +150,7 @@ namespace AssetsGrid.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<ActionResult> DeleteAsset(Guid AssetID)
+        public async Task<ActionResult> DeleteAsset(int AssetID)
         {
             var asset = new Assets { AssetID = AssetID };
             DbContext.Assets.Attach(asset);
@@ -238,6 +239,123 @@ namespace AssetsGrid.Controllers
             };
 
             return asset;
+        }
+
+        [HttpGet]
+        public ActionResult AdvancedSearch()
+        {
+            var advancedSearchViewModel = new AdvancedSearchViewModel();
+
+            advancedSearchViewModel.FacilitySiteList = new SelectList(DbContext.FacilitySites
+            .Where(facilitySite => facilitySite.IsActive && !facilitySite.IsDeleted)
+            .Select(x => new { x.FacilitySiteID, x.FacilityName }),
+            "FacilitySiteID",
+            "FacilityName");
+
+            advancedSearchViewModel.BuildingList = new SelectList(DbContext.Assets
+            .GroupBy(x => x.Building)
+            .Where(x => x.Key != null && !x.Key.Equals(string.Empty))
+            .Select(x => new { Building = x.Key }),
+            "Building",
+            "Building");
+
+            advancedSearchViewModel.ManufacturerList = new SelectList(DbContext.Assets
+            .GroupBy(x => x.Manufacturer)
+            .Where(x => x.Key != null && !x.Key.Equals(string.Empty))
+            .Select(x => new { Manufacturer = x.Key }),
+            "Manufacturer",
+            "Manufacturer");
+
+            advancedSearchViewModel.StatusList = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Text="Issued",Value=bool.TrueString},
+                new SelectListItem { Text="Not Issued",Value = bool.FalseString}
+            },
+            "Value",
+            "Text"
+            );
+
+            return View("_AdvancedSearchPartial", advancedSearchViewModel);
+        }
+
+        private IQueryable<Assets> SearchAssets(IDataTablesRequest requestModel,
+            AdvancedSearchViewModel searchViewModel, IQueryable<Assets> query)
+        {
+            // Apply filters
+            if (requestModel.Search.Value != string.Empty)
+            {
+                var value = requestModel.Search.Value.Trim();
+                query = query.Where(p => p.Barcode.Contains(value) ||
+                                         p.Manufacturer.Contains(value) ||
+                                         p.ModelNumber.Contains(value) ||
+                                         p.Building.Contains(value)
+                                   );
+            }
+
+            /***** Advanced Search Starts ******/
+            //if (searchViewModel.FacilitySite != Guid.Empty)
+            //{
+            //    query = query.Where(x => x.FacilitySiteID == searchViewModel.FacilitySite);
+            //}
+
+            if (searchViewModel.Building != null)
+                query = query.Where(x => x.Building == searchViewModel.Building);
+
+            if (searchViewModel.Manufacturer != null)
+                query = query.Where(x => x.Manufacturer == searchViewModel.Manufacturer);
+
+            if (searchViewModel.Status != null)
+            {
+                bool Issued = bool.Parse(searchViewModel.Status);
+                query = query.Where(x => x.Issued == Issued);
+            }
+
+            /***** Advanced Search Ends ******/
+
+            var filteredCount = query.Count();
+
+            // Sort
+            var sortedColumns = requestModel.Columns.GetSortedColumns();
+            var orderByString = String.Empty;
+
+            foreach (var column in sortedColumns)
+            {
+                orderByString += orderByString != String.Empty ? "," : "";
+                orderByString += (column.Data) +
+                (column.SortDirection == Column.OrderDirection.Ascendant ?
+                " asc" : " desc");
+            }
+
+            //query = query.OrderBy(orderByString ==string.Empty ? "BarCode asc" : orderByString);
+            
+            return query;
+        }
+        public ActionResult Get([ModelBinder(typeof(DataTablesBinder))]
+        IDataTablesRequest requestModel, AdvancedSearchViewModel searchViewModel)
+        {
+            IQueryable<Assets> query = DbContext.Assets;
+            var totalCount = query.Count();
+
+            // searching and sorting
+            query = SearchAssets(requestModel, searchViewModel, query);
+            var filteredCount = query.Count();
+
+            // Paging
+            //query = query.Skip(requestModel.Start).Take(requestModel.Length);
+
+           var data = query.Select(asset => new
+            {
+                AssetID = asset.AssetID,
+                BarCode = asset.Barcode,
+                Manufacturer = asset.Manufacturer,
+                ModelNumber = asset.ModelNumber,
+                Building = asset.Building,
+                RoomNo = asset.RoomNo,
+                Quantity = asset.Quantity
+            }).ToList();
+
+            return Json(new DataTablesResponse
+            (requestModel.Draw, data, filteredCount, totalCount), JsonRequestBehavior.AllowGet);
         }
     }
 }

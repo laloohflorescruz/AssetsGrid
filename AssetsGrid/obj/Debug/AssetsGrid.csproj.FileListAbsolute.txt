@@ -188,6 +188,5 @@ D:\Workspaces\AssetsGrid\AssetsGrid\bin\Microsoft.AI.DependencyCollector.xml
 D:\Workspaces\AssetsGrid\AssetsGrid\bin\Microsoft.AI.ServerTelemetryChannel.xml
 D:\Workspaces\AssetsGrid\AssetsGrid\bin\Microsoft.AI.WindowsServer.xml
 D:\Workspaces\AssetsGrid\AssetsGrid\bin\Microsoft.AI.Web.xml
-D:\Workspaces\AssetsGrid\AssetsGrid\obj\Debug\AssetsGrid.csprojResolveAssemblyReference.cache
 D:\Workspaces\AssetsGrid\AssetsGrid\obj\Debug\AssetsGrid.dll
 D:\Workspaces\AssetsGrid\AssetsGrid\obj\Debug\AssetsGrid.pdb

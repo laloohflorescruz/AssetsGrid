@@ -10,11 +10,10 @@ namespace AssetsGrid.Models
     public class FacilitySites
     {
         [Key]
-        public Guid FacilitySiteID { get; set; }
+        public int FacilitySiteID { get; set; }
         public string FacilityName { get; set; }
         public bool IsActive { get; set; }
         public string CreatedBy { get; set; }
-        [Required, DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedAt { get; set; }
         public Guid? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; }
