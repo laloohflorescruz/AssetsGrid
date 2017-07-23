@@ -190,3 +190,4 @@ D:\Workspaces\AssetsGrid\AssetsGrid\bin\Microsoft.AI.WindowsServer.xml
 D:\Workspaces\AssetsGrid\AssetsGrid\bin\Microsoft.AI.Web.xml
 D:\Workspaces\AssetsGrid\AssetsGrid\obj\Debug\AssetsGrid.dll
 D:\Workspaces\AssetsGrid\AssetsGrid\obj\Debug\AssetsGrid.pdb
+D:\Workspaces\AssetsGrid\AssetsGrid\obj\Debug\AssetsGrid.csprojResolveAssemblyReference.cache
