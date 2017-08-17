@@ -3,14 +3,14 @@
         <div class="panel panel-primary list-panel" id="list-panel">
             <div class="panel-heading list-panel-heading">
                 <h1 class="panel-title list-panel-title">Assets</h1>
-
-                <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#advancedSearchModal" id="advancedsearch-button">
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Advanced Search
-                </button>
+                <hr />
 
                 <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-url="@Url.Action("Create","Asset")" id="btnCreateAsset">
-                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Add Asset
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 </button>
+
+                <button type="button" class="btn btn-default btn-default btn-md" data-toggle="modal" data-target="#advancedSearchModal" id="advancedsearch-button">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span> </button>
             </div>
 
             <div class="panel-body">
@@ -40,7 +40,6 @@
 @Html.Action("AdvancedSearch")
 @section Scripts
 {
-
     <script type="text/javascript">
         var assetListVM;
         $(function () {

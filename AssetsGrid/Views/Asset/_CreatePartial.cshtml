@@ -10,6 +10,7 @@
                 <h4 class="modal-title">Add Asset</h4>
             </div>
 
+
             @using (Ajax.BeginForm("Create", "Asset", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "CreateAssetSuccess" }, new { @class = "form-horizontal", role = "form" }))
             {
                 <div class="modal-body">
@@ -63,13 +64,6 @@
                                     </div>
                                 </div>
 
-
-
-
-
-
-
-
                                 <div class="tab-pane" id="2a">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.AstID, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -104,10 +98,6 @@
                                     </div>
                                 </div>
 
-
-
-
-
                                 <div class="tab-pane" id="3a">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -133,8 +123,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
 
                                 <div class="tab-pane" id="4a">
                                     <div class="form-group">
@@ -168,7 +156,6 @@
                                             @Html.ValidationMessageFor(model => model.RoomNo, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="tab-pane" id="5a">
@@ -206,39 +193,16 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
-
-
-
-
-
-
-
-
-
-
-
                         </div>
                     </div>
-
-
-
-
-
-
-
-
-
-
-
                 </div>
+
                 <div class="modal-footer">
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <input type="submit" class="btn btn-primary" value="Save" />
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> </button>
+                            <button type="submit" class="btn btn-info"> <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> </button>
                         </div>
                     </div>
                 </div>
